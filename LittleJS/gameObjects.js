@@ -80,7 +80,7 @@ class Ball extends EngineObject
 {
     constructor(pos)
     {
-        super(pos, vec2(.8), 0, vec2(128));
+        super(pos, vec2(.7), 0, vec2(128));
 
         // make a bouncy ball
         this.setCollision(1);

@@ -76,8 +76,9 @@ function gameUpdate()
             startGame();
         else if (!lives)
         {
-            engineObjectsDestroy();
+            // game over
             isPlaying = 0;
+            engineObjectsDestroy();
         }
 
         if (isPlaying)
@@ -125,10 +126,10 @@ function gameRenderPost()
     }
 
     if (!ball || !isPlaying)
-        drawText(lives || !isPlaying? 'Click to Play' : 'Game Over', cameraPos.add(vec2(0,-1)), 2, new Color);
+        drawText(lives || !isPlaying? 'Click to Play' : 'Game Over', cameraPos.add(vec2(0,-1)), 2);
 
     if (!isPlaying)
-        drawText('High Score\n' + localStorage[highScoreKey], cameraPos.add(vec2(0,-4)), 1, new Color);
+        drawText('High Score\n' + localStorage[highScoreKey], cameraPos.add(vec2(0,-4)), 1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
