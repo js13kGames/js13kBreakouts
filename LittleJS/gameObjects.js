@@ -25,8 +25,18 @@ class Paddle extends EngineObject
         }
         else
         {
-            // move to mouse/touch
-            this.pos.x = mousePos.x;
+            const keyboardDirection = keyIsDown(39) - keyIsDown(37);
+            if (keyboardDirection)
+            {
+                this.pos.x += .5*keyboardDirection;
+                usingKeyboard = 1;
+            }
+            else if (!usingKeyboard || mouseWasPressed(0))
+            {
+                // move to mouse/touch
+                this.pos.x = mousePos.x;
+                usingKeyboard= 0;
+            }
         }
         this.pos.x = clamp(this.pos.x, this.size.x/2, worldSize.x - this.size.x/2);
     }

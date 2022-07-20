@@ -15,7 +15,7 @@ const sound_bounce     = new Sound([,,1e3,,.03,.02,1,2,,,940,.03,,,,,.2,.6,,.06]
 const sound_die        = new Sound([1.31,,154,.05,.3,.37,1,.3,-9.9,-6.9,,,.11,,,.2,.02,.42,.16]);
 
 // globals
-let ball, paddle, score, lives, bounceCount, isPlaying, worldSize;
+let ball, paddle, score, lives, bounceCount, isPlaying, worldSize, usingKeyboard;
 
 ///////////////////////////////////////////////////////////////////////////////
 function gameInit()
@@ -70,7 +70,7 @@ function startGame()
 function gameUpdate()
 {
     // spawn ball
-    if (!ball && (mouseWasPressed(0) || gamepadWasPressed(0)))
+    if (!ball && (mouseWasPressed(0) || gamepadWasPressed(0) || keyWasPressed(13) || keyWasPressed(32)))
     {
         if (!isPlaying)
             startGame();
