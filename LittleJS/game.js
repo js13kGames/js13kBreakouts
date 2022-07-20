@@ -5,8 +5,7 @@
 'use strict';
 
 const maxLives = 3;
-const ballSpeed = 15;
-const highScoreKey = 'ljsBreakoutHighScore';
+const highScoreKey = 'LittleJS_BreakoutHighScore';
 const logoImage = new Image();
 
 // sound effects
@@ -16,41 +15,55 @@ const sound_bounce     = new Sound([,,1e3,,.03,.02,1,2,,,940,.03,,,,,.2,.6,,.06]
 const sound_die        = new Sound([1.31,,154,.05,.3,.37,1,.3,-9.9,-6.9,,,.11,,,.2,.02,.42,.16]);
 
 // globals
-let ball, paddle, score, lives, bounces, isPlaying;
+let ball, paddle, score, lives, bounceCount, isPlaying, worldSize;
 
 ///////////////////////////////////////////////////////////////////////////////
 function gameInit()
 {
+    // init fixed size 1080p canvas
     canvasFixedSize = vec2(1080, 1920);
-    cameraPos = canvasFixedSize.scale(.5);
-    cameraScale = 1;
-    objectMaxSpeed = 100;
 
+    // fit camera to world
+    worldSize = vec2(14, 30);
+    cameraScale = canvasFixedSize.x / worldSize.x;
+    cameraPos = worldSize.scale(.5);
+
+    // init high score
     localStorage[highScoreKey] = localStorage[highScoreKey] || 0;
+
+    // hide watermark
+    if (debug)
+        showWatermark = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 function startGame()
 {
+    // clear all game objects and reset
     engineObjectsDestroy();
     lives = maxLives;
-    paddle = new Paddle(vec2(cameraPos.x, 100));
-    bounces = score = 0;
+    score = bounceCount = 0;
+    isPlaying = 1;
+
+    // spawn player paddle
+    paddle = new Paddle(vec2(cameraPos.x, 4));
 
     // spawn blocks
-    let bs = vec2(150,60);
+    let bs = vec2(2,1);
     let ls = vec2(7,8);
     let pos = vec2()
     pos.x = cameraPos.x - bs.x*(ls.x-1)/2;
-    pos.y = canvasFixedSize.y-bs.y*(ls.y)-200;
+    pos.y = canvasFixedSize.y-bs.y*(ls.y);
     
-    for (let i = ls.x; i--;)
-    for (let j = ls.y; j--;)
+    // spawn blocks
+    for (pos.x = -worldSize.x+1; pos.x <= worldSize.x; pos.x += 2)
+    for (pos.y = 24; pos.y > 16; pos.y -= 1)
     {
-        let color = (new Color(64.7/100,15/99,19/99)).lerp(new Color(.44,.06,.09), j/ls.y);
-        new Block(pos.add(vec2(i,j).multiply(bs)), color);
+        let color1 = new Color(.44,.06,.09);
+        let color2 = new Color(.64,.15,.19);
+        let colorPercent = percent(pos.y, 24, 16);
+        new Block(pos, color1.lerp(color2, colorPercent));
     }
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -59,26 +72,34 @@ function gameUpdate()
     // spawn ball
     if (!ball && (mouseWasPressed(0) || gamepadWasPressed(0)))
     {
-        if (!isPlaying || !lives)
+        if (!isPlaying)
             startGame();
+        else if (!lives)
+        {
+            engineObjectsDestroy();
+            isPlaying = 0;
+        }
 
-        isPlaying = 1;
-        ball = new Ball(cameraPos);
-        sound_start.play();
+        if (isPlaying)
+        {
+            // spawn ball
+            ball = new Ball(cameraPos);
+            sound_start.play();
+        }
     }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 function gameUpdatePost()
 {
-
+    // unused for this demo, called after objects and physics are updated
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 function gameRender()
 {
     // draw the background
-    drawRect(canvasFixedSize.scale(.5), canvasFixedSize, new Color(.13, .15, .2));
+    drawRectScreenSpace(canvasFixedSize.scale(.5), canvasFixedSize, new Color(.13, .15, .2));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -86,24 +107,28 @@ function gameRenderPost()
 {
     if (isPlaying)
     {
-        drawText(score, vec2(99, canvasFixedSize.y-99), 64)
+        // draw score
+        drawText(score, vec2(2, worldSize.y-4))
 
+        // draw lives
         for(let i = maxLives; i--;)
         {
             let color = i < lives ? new Color(1,1,1) : new Color(.3,.3,.3);
-            drawTile(vec2(canvasFixedSize.x/2+50*i-50*(maxLives-1)/2, canvasFixedSize.y-99), vec2(32), 1, vec2(128), color);
+            let pos = vec2(worldSize.x/2 + 1*i - 1*(maxLives-1)/2,  worldSize.y-4);
+            drawTile(pos, vec2(.8), 1, vec2(128), color);
         }
     }
     else
     {
-        overlayContext.drawImage(logoImage,overlayCanvas.width/2-logoImage.width/2,90);
+        // draw logo
+        overlayContext.drawImage(logoImage, overlayCanvas.width/2 - logoImage.width/2, 90);
     }
 
     if (!ball || !isPlaying)
-        drawText(lives || !isPlaying? 'Click to Play' : 'Game Over', cameraPos.add(vec2(0,-100)), 100, new Color);
+        drawText(lives || !isPlaying? 'Click to Play' : 'Game Over', cameraPos.add(vec2(0,-1)), 2, new Color);
 
     if (!isPlaying)
-        drawText('High Score\n' + localStorage[highScoreKey], cameraPos.add(vec2(0,-300)), 70, new Color);
+        drawText('High Score\n' + localStorage[highScoreKey], cameraPos.add(vec2(0,-4)), 1, new Color);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -111,4 +136,4 @@ function gameRenderPost()
 
 // startup when logo is finished
 logoImage.src = 'logo.png';
-logoImage.onload = ()=> engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, 'tiles.png?1');
+logoImage.onload = ()=> engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, 'tiles.png');
