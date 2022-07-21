@@ -49,14 +49,8 @@ function startGame()
     paddle = new Paddle(vec2(cameraPos.x, 4));
 
     // spawn blocks
-    let bs = vec2(2,1);
-    let ls = vec2(7,8);
-    let pos = vec2()
-    pos.x = cameraPos.x - bs.x*(ls.x-1)/2;
-    pos.y = canvasFixedSize.y-bs.y*(ls.y);
-    
-    // spawn blocks
-    for (pos.x = -worldSize.x+1; pos.x <= worldSize.x; pos.x += 2)
+    let pos = vec2(cameraPos.x - 8, canvasFixedSize.y - 8);
+    for (pos.x = 1-worldSize.x; pos.x <= worldSize.x; pos.x += 2)
     for (pos.y = 24; pos.y > 16; pos.y -= 1)
     {
         let color1 = new Color(.44,.06,.09);
