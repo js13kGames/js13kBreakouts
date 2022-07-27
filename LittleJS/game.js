@@ -30,10 +30,6 @@ function gameInit()
 
     // init high score
     localStorage[highScoreKey] = localStorage[highScoreKey] || 0;
-
-    // hide watermark
-    if (debug)
-        showWatermark = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
