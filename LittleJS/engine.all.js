@@ -33,7 +33,7 @@ const debugPointSize = .5;
 /** True if watermark with FPS should be down
  *  @default
  *  @memberof Debug */
-let showWatermark = 1;
+let showWatermark = 0;
 
 /** True if god mode is enabled, handle this however you want
  *  @default
