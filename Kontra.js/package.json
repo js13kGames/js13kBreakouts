@@ -5,8 +5,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "node build.js",
-    "clean": "rm -rf dist/index.html dist/js13kBreakout.zip",
-    "pack": "npm run clean && js13k-packer index.html dist -o js13kBreakout.zip"
+    "clean": "rm -rf dist",
+    "prepare": "mkdir dist && cp logo.png dist",
+    "pack": "npm run clean && npm run prepare && js13k-packer index.html dist -o js13kBreakout.zip && cp dist/js13kBreakout.zip . && npm run clean"
   },
   "author": "Steven Lambert",
   "devDependencies": {
