@@ -1,4 +1,6 @@
-# js13kBreakout using Kontra.js
+# js13kBreakout with Kontra.js
+
 Breakout game using Kontra.js for the js13kGames competition.
 
-https://straker.github.io/kontra/
+- [Live Demo](https://breakouts.js13kgames.com/KontraJs/)
+- [Documentation](https://straker.github.io/kontra/)

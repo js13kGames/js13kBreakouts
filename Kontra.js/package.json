@@ -1,0 +1,16 @@
+{
+  "name": "kontra",
+  "version": "1.0.0",
+  "description": "KontraJs Breakout Example",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node build.js",
+    "pack": "js13k-packer index.html dist -o js13kBreakout.zip"
+  },
+  "author": "Steven Lambert",
+  "devDependencies": {
+    "esbuild": "^0.14.51",
+    "esbuild-plugin-kontra": "^1.0.0",
+    "js13k-packer": "^1.0.1"
+  }
+}
