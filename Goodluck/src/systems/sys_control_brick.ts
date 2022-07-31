@@ -1,3 +1,4 @@
+import {Action, dispatch} from "../actions.js";
 import {destroy_all} from "../components/com_children.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
@@ -10,6 +11,7 @@ export function sys_control_brick(game: Game, delta: number) {
             let collide = game.World.Collide2D[ent];
             if (collide.Collisions.length > 0) {
                 destroy_all(game.World, ent);
+                dispatch(game, Action.BrickDestroyed, ent);
             }
         }
     }

@@ -23,7 +23,7 @@ export function scene_main(game: Game) {
     instantiate(game, [
         spatial_node2d(),
         local_transform2d([0, 0]),
-        draw_rect("#DDD", game.SceneWidth, game.SceneHeight),
+        draw_rect("#212633", game.SceneWidth, game.SceneHeight),
     ]);
 
     // Player's paddle.
@@ -38,7 +38,7 @@ export function scene_main(game: Game) {
         let y = game.SceneHeight / 2 - 3.5 - row * (BRICK_HEIGHT + padding);
         for (let col = -3; col < 4; col++) {
             let x = col * (BRICK_WIDTH + padding);
-            instantiate(game, [...blueprint_brick(game), copy_position([x, y])]);
+            instantiate(game, [...blueprint_brick(game, y / 8), copy_position([x, y])]);
         }
     }
 }

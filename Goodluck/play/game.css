@@ -1,5 +1,6 @@
 html,
 body {
+    background: #000;
     overflow: hidden;
     margin: 0;
 }
@@ -12,8 +13,10 @@ main {
     word-break: break-word;
     user-select: none;
     touch-action: none;
+    display: grid;
+    place-items: center;
 }
-img {
+[hidden] {
     display: none;
 }
 [onclick] {

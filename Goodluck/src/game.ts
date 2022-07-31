@@ -3,6 +3,7 @@ import {create_spritesheet_from} from "../common/texture.js";
 import {GL_BLEND, GL_DEPTH_TEST} from "../common/webgl.js";
 import {FLOATS_PER_INSTANCE, setup_render2d_buffers} from "../materials/layout2d.js";
 import {mat_render2d} from "../materials/mat_render2d.js";
+import {PlayState} from "./actions.js";
 import {sys_camera2d} from "./systems/sys_camera2d.js";
 import {sys_collide2d} from "./systems/sys_collide2d.js";
 import {sys_control_always2d} from "./systems/sys_control_always2d.js";
@@ -41,6 +42,10 @@ export class Game extends Game3D {
 
     SceneWidth = 14;
     SceneHeight = 25;
+
+    PlayState = PlayState.Title;
+    Score = 0;
+    Lives = 3;
 
     constructor() {
         super();

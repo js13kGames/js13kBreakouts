@@ -32,12 +32,15 @@ game.roadroller.js: game.terser.js
 # Set -O2 for better (and longer) compression.
 	npx --quiet roadroller -O1 --dirty $< -o $@
 
+logo.png: ../src/logo.png
+	cp $< $@
+
 index.html: game.html game.roadroller.js game.css debug.css posthtml.cjs
 	node posthtml.cjs $< > $@
 
 # On Ubuntu, install p7zip-full. See https://www.7-zip.org/download.html.
-index.zip: index.html
-	7z a -mx=9 -mfb=256 -mpass=15 $@ $<
+index.zip: index.html logo.png
+	7z a -mx=9 -mfb=256 -mpass=15 $@ $^
 
 .PHONY: clean
 clean:

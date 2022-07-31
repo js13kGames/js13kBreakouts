@@ -1,6 +1,8 @@
 import {DEG_TO_RAD} from "../../common/math.js";
 import {map_range} from "../../common/number.js";
 import {Entity} from "../../common/world.js";
+import {Action, dispatch} from "../actions.js";
+import {destroy_all} from "../components/com_children.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
@@ -33,8 +35,8 @@ function update(game: Game, entity: Entity) {
     }
 
     if (local.Translation[1] < -top) {
-        local.Translation[1] = -top;
-        control.Direction[1] *= -1;
+        destroy_all(game.World, entity);
+        dispatch(game, Action.BallOutOfBounds, entity);
     }
 
     if (local.Translation[0] < -right) {

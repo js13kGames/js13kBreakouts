@@ -36,6 +36,25 @@ Finally, I create a grid of green bricks in `scene_main`, each with a static col
 
 To make the ball bounce off the paddle, bricks, and the walls of the playing area, I create `sys_control_bounce`. I don't have any strict way of identifying the ball among all other entites (like I do with `Has.ControlBrick` for bricks). However, using the `Has.LocalTransform2D | Has.ControlAlways2D | Has.Collide2D` union is good enough for now. In fact, this is another thing that I enjoy about the ECS architecture — I don't actually need to special-case the ball here. Any entity with these components will get the behavior of bouncing off other game objects.
 
+### Step 2. Minimum Shippable Product
+
+<img src="screenshots/step2b.png" align=right width=160>
+<img src="screenshots/step2a.png" align=right width=160>
+
+In this step I'm going to focus on making the game look like it's supposed to. I'll also implement the full user flow, from launching the game and seeing the title screen, to starting to play, to counting and displaying the score, and finally, to having a clear lose condition.
+
+I start by copying the assets, `block.png` and `circle.png`, into `sprites/`. There's a `Makefile` inside it which builds a single spritesheet out of all PNGs in the directory, optimized in the WEBP format. It also produces a spritesheet map, `spritesheet.ts` which is then used by `render2d` to resolve sprite names to spritesheet coordinates.
+
+The `Render2D` component takes advantage of Goodluck's 2D renderer implemented in WebGL2. This is in contrast to the `Draw2D` component which I used in Step 1 to draw simple rectangles, and which uses the Context2D drawing API. Thanks to WebGL2's instanced drawing, `sys_render2d` renders all sprites with a single draw call, making it very fast. Modern computers and phones should be able to render 50,000 to 100,000 sprites at 60 FPS. As an additional optimization, entities with `local_transform2d()` but _without_ `spatial_node2d()` have their transformation matrix computed directly in the shader, increasing performance even further. Such entities are great for particles and background tiles; without the `SpatialNode2D` component they cannot be parents nor children of other entities.
+
+I tweak the colors and switch `draw_rect()` to `render2d()` in all blueprints (i.e. functions that define game objects). It's time for some UI. I build it using regular HTML and CSS, which means that I can leverage the CSS Grid for creating a responsive layout, as well as many other features of the platform. To manage the UI's state, Goodluck uses a pattern which should be familiar to React developers: the UI components are defined declaratively as strings of HTML content, and read the UI's state defined on the `Game` object. The binding is one-way; to mutate the state, you need to emit an _action_ which is processed by a reducer-like function called `dispatch`. If the HTML produced by the UI components changes between frames, the _entire_ UI is updated via `innerHTML = newContent`. This is a bit like Virtual DOM diffing, except that [implemented in 4 lines of code](https://github.com/piesku/goodluck/blob/387b4f0ff0f3e10514628a1715315ea9dc4f5681/core/systems/sys_ui.ts#L11-L14) :). It's terrible for user input, but good enough for small games, usually!
+
+The `dispatch` function is a bit of an escape hatch. Contrary to proper reducers, it's allowed to mutate the game's state and to cause side-effects. It's the perfect place to put the logic of spawning a new ball after the player loses the current one.
+
+I define a few actions like `BrickDestroyed` and `BallOutOfBounds` and I modify `sys_control_brick` and `sys_control_bounce` to dispatch them when, respectively, a brick entity is hit by the ball and destroyed, and when the ball goes beyond the bottom edge of the scene. I also define `Game.PlayState` which is an enum of `Title`, `Playing`, `BallLost`, and `GameOver`. I'll use it to transition between the "views" of the game, and to know which UI component should be visible.
+
+Lastly, I add `logo.png`, which is displayed on the title screen. It's an 8KB image and takes half of the build size, but that's OK for this project. In fact, I quite like it as an illustration of how small the code really is compared to a single image file!
+
 ## Running Locally
 
 To run locally, install the dependencies and start the local dev server:
