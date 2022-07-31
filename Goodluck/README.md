@@ -24,6 +24,18 @@ There is much more code that I could remove from the NewProject2D example knowin
 
 At the end of this project I'll have another chance to remove unused components and systems to optimize the final build size.
 
+### Step 1. Prototype the gameplay
+
+<img src="screenshots/step1.png" align=right width=160>
+
+The goal of this step is to get the rough gameplay ready to be tested and improved. I start by removing the default `scene_stage` and build my own `scene_main` with the player's paddle. The paddle is simply a red rectangle (the `draw_rect()` component mixin). It also has a dynamic collider (`collide2d(true)`), can move (`move2d()`), and can be controlled by the player (`control_player()`).
+
+Next, I add the ball (a blue square), which can move (`move2d()`), and which uses `control_always2d()` to continue moving every frame. `Move2d` merely gives an entity the ability to move, but it still needs another system to set the movement direction, e.g. based on the user's input. Goodluck uses the convention of _control_ systems which inform other systems what to do.
+
+Finally, I create a grid of green bricks in `scene_main`, each with a static collider (`collide2d(false)`, which means the positions of the collider is not updated each frame). I also introduce a new component bit, `Has.ControlBrick`, and a corresponding system, `sys_control_brick`. In this system, each brick checks for any collisions registered by its collider; if there were any, the brick destroys itself.
+
+To make the ball bounce off the paddle, bricks, and the walls of the playing area, I create `sys_control_bounce`. I don't have any strict way of identifying the ball among all other entites (like I do with `Has.ControlBrick` for bricks). However, using the `Has.LocalTransform2D | Has.ControlAlways2D | Has.Collide2D` union is good enough for now. In fact, this is another thing that I enjoy about the ECS architecture — I don't actually need to special-case the ball here. Any entity with these components will get the behavior of bouncing off other game objects.
+
 ## Running Locally
 
 To run locally, install the dependencies and start the local dev server:

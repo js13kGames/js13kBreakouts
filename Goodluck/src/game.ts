@@ -6,6 +6,8 @@ import {mat_render2d} from "../materials/mat_render2d.js";
 import {sys_camera2d} from "./systems/sys_camera2d.js";
 import {sys_collide2d} from "./systems/sys_collide2d.js";
 import {sys_control_always2d} from "./systems/sys_control_always2d.js";
+import {sys_control_bounce} from "./systems/sys_control_bounce.js";
+import {sys_control_brick} from "./systems/sys_control_brick.js";
 import {sys_control_keyboard} from "./systems/sys_control_keyboard.js";
 import {sys_control_mouse} from "./systems/sys_control_mouse.js";
 import {sys_draw2d} from "./systems/sys_draw2d.js";
@@ -37,8 +39,8 @@ export class Game extends Game3D {
     InstanceData = new Float32Array(this.World.Capacity * FLOATS_PER_INSTANCE);
     InstanceBuffer = this.Gl.createBuffer()!;
 
-    SceneWidth = 32;
-    SceneHeight = 32;
+    SceneWidth = 14;
+    SceneHeight = 25;
 
     constructor() {
         super();
@@ -57,6 +59,9 @@ export class Game extends Game3D {
         sys_collide2d(this, delta);
         sys_physics2d_resolve(this, delta);
         sys_trigger2d(this, delta);
+
+        sys_control_bounce(this, delta);
+        sys_control_brick(this, delta);
     }
 
     override FrameUpdate(delta: number) {
