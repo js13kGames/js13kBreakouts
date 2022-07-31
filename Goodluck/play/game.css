@@ -1,0 +1,21 @@
+html,
+body {
+    overflow: hidden;
+    margin: 0;
+}
+canvas,
+main {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    word-break: break-word;
+    user-select: none;
+    touch-action: none;
+}
+img {
+    display: none;
+}
+[onclick] {
+    cursor: pointer;
+}

@@ -1,0 +1,8 @@
+# Remove strict mode
+s/'use strict';//
+
+# Remove indents
+s/^ *//
+
+# Remove double-slash comments
+s/\/\/ .*//
