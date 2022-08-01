@@ -9,33 +9,38 @@ class Paddle extends EngineObject
 {
     constructor(pos)
     {
-        super(pos, vec2(3,.7), 1, vec2(256,128));
+        const size = vec2(3, .7);
+        const tileIndex = 1;
+        const tileSize = vec2(256, 128);
+        super(pos, size, tileIndex, tileSize);
 
-        // set up collision
+        // set up static collision
         this.setCollision(1, 1);
         this.mass = 0;
     }
 
     update()
     {
+        const moveSpeed = .5;
         if (isUsingGamepad)
         {
             // move with gamepad
-            this.pos.x += gamepadStick(0).x;
+            this.pos.x += moveSpeed*gamepadStick(0).x;
         }
         else
         {
             const keyboardDirection = keyIsDown(39) - keyIsDown(37);
             if (keyboardDirection)
             {
-                this.pos.x += .5*keyboardDirection;
+                // move with keyboard
+                this.pos.x += moveSpeed*keyboardDirection;
                 usingKeyboard = 1;
             }
             else if (!usingKeyboard || mouseWasPressed(0))
             {
                 // move to mouse/touch
                 this.pos.x = mousePos.x;
-                usingKeyboard= 0;
+                usingKeyboard = 0;
             }
         }
         this.pos.x = clamp(this.pos.x, this.size.x/2, worldSize.x - this.size.x/2);
@@ -47,19 +52,22 @@ class Block extends EngineObject
 {
     constructor(pos, color)
     {
-        super(pos, vec2(2,1), 1, vec2(256,128), 0, color);
+        const size = vec2(2, 1);
+        const tileIndex = 1;
+        const tileSize = vec2(256, 128);
+        super(pos, size, tileIndex, tileSize, 0, color);
 
         // draw smaller then physical size
         this.drawSize = vec2(1.7, .7);
 
-        // set to collide
+        // set up static collision
         this.setCollision(1, 1);
         this.mass = 0;
     }
 
     collideWithObject(o)              
     {
-        // destroy block when hit with ball
+        // destroy block when hit
         this.destroy();
         sound_breakBlock.play(this.pos);
 
@@ -90,7 +98,10 @@ class Ball extends EngineObject
 {
     constructor(pos)
     {
-        super(pos, vec2(.7), 0, vec2(128));
+        const size = vec2(.7);
+        const tileIndex = 0;
+        const tileSize = vec2(128);
+        super(pos, size, tileIndex, tileSize);
 
         // make a bouncy ball
         this.setCollision(1);
@@ -103,15 +114,6 @@ class Ball extends EngineObject
 
     update()
     {
-        if (this.pos.y < 0)
-        {
-            // destroy ball if it goes below the level
-            ball = 0;
-            lives--;
-            sound_die.play();
-            this.destroy();
-        }
-
         // bounce on sides and top
         const nextPos = this.pos.x + this.velocity.x;
         if (nextPos - this.size.x/2 < 0 || nextPos + this.size.x/2 > worldSize.x)
@@ -125,6 +127,15 @@ class Ball extends EngineObject
             this.bounce();
         }
 
+        if (this.pos.y < 0)
+        {
+            // destroy ball if it goes below the level
+            this.destroy();
+            sound_die.play();
+            ball = 0;
+            lives--;
+        }
+
         // update physics
         super.update();
     }
@@ -133,12 +144,13 @@ class Ball extends EngineObject
     {
         if (o == paddle && this.velocity.y < 0)
         {
-            // put english on the ball when it collides with paddle
-            this.velocity = this.velocity.rotate(.4 * (this.pos.x - o.pos.x));
+            // control direction of ball when it collides with paddle
+            const angleScale = .4;
+            this.velocity = this.velocity.rotate(angleScale * (this.pos.x - o.pos.x));
             this.velocity.y = max(abs(this.velocity.y), .2);
-            this.bounce();
 
-            // reset bounce count
+            // bounce
+            this.bounce();
             bounceCount = 0;
             return 0;
         }
