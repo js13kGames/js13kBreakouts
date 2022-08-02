@@ -55,6 +55,26 @@ I define a few actions like `BrickDestroyed` and `BallOutOfBounds` and I modify 
 
 Lastly, I add `logo.png`, which is displayed on the title screen. It's an 8KB image and takes half of the build size, but that's OK for this project. In fact, I quite like it as an illustration of how small the code really is compared to a single image file!
 
+### Step 3. Add polish
+
+<img src="screenshots/step3.png" align=right width=160>
+
+The game is already looking good. I can now spend some time adding non-critical features with the goal of improving the user's experience and making the game _feel_ better.
+
+I start by adding mouse and touch input. The control scheme is simple enough that I don't need to handle mouse and touch separately. I rename `sys_control_mouse` to `sys_control_pointer` and I use `viewport_to_world()` from `common/input.ts` to convert the pointer coordinates in pixels to world coordinates. Goodluck uses abstract "world" units which don't easily translate into pixels. Instead, `viewport_to_world()` takes into account the position and the projection of the camera.
+
+I could also add logic to capture the mouse pointer, but then I'd actually need a separate system for handling mouse input. When the pointer is captured, mouse events don't have absolute positions attached to them and instead only report movement deltas.
+
+I want to be able to emit particles when the ball hits a brick. Goodluck2D is still a young project and as of August 2022 doesn't come with a particle emitter built-in. (Previously, Goodluck focused on 3D games.) However, I should be able to create my own emitter by combining a few existing systems, and adding one custom one. First, I create `blueprint_boom()` which will be instantiated at a brick's position when it's destroyed. It will be a short-lived entity that creates particles around the collision. I give it a `lifespan()` to make it self-destruct after a few tenths of a second, and `spawn()` to make it spawn particles. Next, I create `blueprint_particle()` with `lifespan()`, `move2d()`, `control_always2d()`, `render2d()` and `order(1)` to make sure particles are drawn on top of everything else. Inside the blueprint function I randomize some parameters of a single particle, like its initial size, movement direction, speed, and alpha. I also add a new system, `sys_control_particle`, to be able to add a bit of custom logic to particles. Namely, I want to reduce their size, speed and alpha over time. Because this is a small and simple game, I'm able to get away with using the `Has.Lifespan | Has.Render2D | Has.LocalTransform2D | Has.Move2D` union to identify particles. In a larger project, I'd probably create a new component bit, `Has.Particle`, possibly with some particle-specific component data, like the start and the end speed, size, and color, to help with interpolating these properties properly. For now, I scale them down by `1 - delta` in each frame; it's not perfect but certainly good enough.
+
+To make the particles look better I switch to additive blending. Because all entities are rendered in a single instanced draw call, the change is global. This is OK for this game, but I may need to batch drawing based on the blending mode in upstream Goodluck in the future (https://github.com/piesku/goodluck/issues/116).
+
+Next, I add sound effects. Goodluck comes with its own work-in-progress audio synthesizer and playback system, which is based on the WebAudio API. It works best for 3D games (it supports spatial audio sources and listeners) but unfortunately the [synth editor](https://stasm.github.io/havefun/) is limited in features and not very user friendly as of August 2022. For js13kBreakout, I'm going to use [@KilledByAPixel](https://github.com/KilledByAPixel)'s excellent [ZzFX](https://killedbyapixel.github.io/ZzFX/) instead. I copy `zzfx.js` into `vendor/` and adapt it slightly to make it work well with TypeScript. I then define a few more actions, like `BallHitPaddle` and `BallHitEdge`, and I dispatch them from `sys_control_bounce`. This allows me to call `zzfx()` inside `dispatch()` when I process these actions.
+
+Being granular about these `BallHit...` actions has the added benefit of making it very easy to implement two extra features. In `BallHitBrick` (previously called `BrickDestroyed`) I can add logic to save a new high score into `localStorage`. I also add a new state variable, `Game.Streak`, which I increment in `BallHitBrick` and reset in `BallHitPaddle` and `BallOutOfBounds`. With this change, the scoring logic becomes a bit more interesting — you get more points the longer the ball is on the loose.
+
+For a bit of more challenge, I wrap up by increasing the ball's speed. The game's ready to ship!
+
 ## Running Locally
 
 To run locally, install the dependencies and start the local dev server:

@@ -13,7 +13,7 @@ export function blueprint_ball(game: Game) {
         spatial_node2d(),
         local_transform2d(undefined, undefined, [BALL_WIDTH, BALL_HEIGHT]),
         control_always2d([1, 1], 0),
-        move2d(9, 0),
+        move2d(15, 0),
         collide2d(true, Layer.Object, Layer.Object, [BALL_WIDTH, BALL_HEIGHT]),
         render2d("circle.png"),
     ];

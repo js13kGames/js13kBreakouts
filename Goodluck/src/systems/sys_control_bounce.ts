@@ -32,6 +32,7 @@ function update(game: Game, entity: Entity) {
     if (local.Translation[1] > top) {
         local.Translation[1] = top;
         control.Direction[1] *= -1;
+        dispatch(game, Action.BallHitEdge, entity);
     }
 
     if (local.Translation[1] < -top) {
@@ -42,11 +43,13 @@ function update(game: Game, entity: Entity) {
     if (local.Translation[0] < -right) {
         local.Translation[0] = -right;
         control.Direction[0] *= -1;
+        dispatch(game, Action.BallHitEdge, entity);
     }
 
     if (local.Translation[0] > right) {
         local.Translation[0] = right;
         control.Direction[0] *= -1;
+        dispatch(game, Action.BallHitEdge, entity);
     }
 
     if (collide.Collisions.length > 0) {
@@ -54,6 +57,10 @@ function update(game: Game, entity: Entity) {
         if (collision.Hit[0]) {
             local.Translation[0] += collision.Hit[0];
             control.Direction[0] *= -1;
+
+            if (game.World.Signature[collision.Other] & Has.ControlPlayer) {
+                dispatch(game, Action.BallHitPaddle, entity);
+            }
         }
         if (collision.Hit[1]) {
             local.Translation[1] += collision.Hit[1];
@@ -66,6 +73,7 @@ function update(game: Game, entity: Entity) {
                 let angle = map_range(x_diff, -x_max, x_max, 135 * DEG_TO_RAD, 45 * DEG_TO_RAD);
                 control.Direction[0] = Math.cos(angle);
                 control.Direction[1] = Math.sin(angle) * Math.sign(-control.Direction[1]);
+                dispatch(game, Action.BallHitPaddle, entity);
             } else {
                 control.Direction[1] *= -1;
             }

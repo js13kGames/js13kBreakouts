@@ -1,5 +1,5 @@
 import {html} from "../../common/html.js";
-import {Action, PlayState} from "../actions.js";
+import {Action, HIGH_SCORE_KEY, PlayState} from "../actions.js";
 import {Game} from "../game.js";
 
 export function App(game: Game) {
@@ -14,6 +14,7 @@ export function App(game: Game) {
 }
 
 function Title(game: Game) {
+    let high_score = localStorage[HIGH_SCORE_KEY];
     return html`
         <div
             style="
@@ -35,6 +36,8 @@ function Title(game: Game) {
         >
             <img src="./logo.png" style="grid-area: logo; width: 80%;" />
             ${CallToAction("Click to Play")}
+            ${high_score &&
+            `<div style="grid-area: highscore; font-size: min(5vmin, 2rem); text-align: center;">High Score<br>${high_score}</div>`}
         </div>
     `;
 }

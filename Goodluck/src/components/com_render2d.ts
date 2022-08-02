@@ -78,3 +78,13 @@ export function set_color(game: Game, entity: Entity, color: Vec4) {
     game.InstanceData[instance_offset + 10] = color[2];
     game.InstanceData[instance_offset + 11] = color[3];
 }
+
+export function get_alpha(game: Game, entity: Entity) {
+    let instance_offset = entity * FLOATS_PER_INSTANCE;
+    return game.InstanceData[instance_offset + 11];
+}
+
+export function set_alpha(game: Game, entity: Entity, alpha: number) {
+    let instance_offset = entity * FLOATS_PER_INSTANCE;
+    game.InstanceData[instance_offset + 11] = alpha;
+}

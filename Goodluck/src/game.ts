@@ -1,6 +1,6 @@
 import {Game3D} from "../common/game.js";
 import {create_spritesheet_from} from "../common/texture.js";
-import {GL_BLEND, GL_DEPTH_TEST} from "../common/webgl.js";
+import {GL_BLEND, GL_DEPTH_TEST, GL_ONE, GL_SRC_ALPHA} from "../common/webgl.js";
 import {FLOATS_PER_INSTANCE, setup_render2d_buffers} from "../materials/layout2d.js";
 import {mat_render2d} from "../materials/mat_render2d.js";
 import {PlayState} from "./actions.js";
@@ -10,7 +10,8 @@ import {sys_control_always2d} from "./systems/sys_control_always2d.js";
 import {sys_control_bounce} from "./systems/sys_control_bounce.js";
 import {sys_control_brick} from "./systems/sys_control_brick.js";
 import {sys_control_keyboard} from "./systems/sys_control_keyboard.js";
-import {sys_control_mouse} from "./systems/sys_control_mouse.js";
+import {sys_control_particle} from "./systems/sys_control_particle.js";
+import {sys_control_pointer} from "./systems/sys_control_pointer.js";
 import {sys_draw2d} from "./systems/sys_draw2d.js";
 import {sys_lifespan} from "./systems/sys_lifespan.js";
 import {sys_move2d} from "./systems/sys_move2d.js";
@@ -46,6 +47,7 @@ export class Game extends Game3D {
     PlayState = PlayState.Title;
     Score = 0;
     Lives = 3;
+    Streak = 0;
 
     constructor() {
         super();
@@ -53,6 +55,7 @@ export class Game extends Game3D {
         this.Gl.clearColor(0, 0, 0, 0);
         this.Gl.disable(GL_DEPTH_TEST);
         this.Gl.enable(GL_BLEND);
+        this.Gl.blendFunc(GL_SRC_ALPHA, GL_ONE);
         setup_render2d_buffers(this.Gl, this.InstanceBuffer);
     }
 
@@ -79,10 +82,11 @@ export class Game extends Game3D {
 
         // Player input.
         sys_control_keyboard(this, delta);
-        sys_control_mouse(this, delta);
+        sys_control_pointer(this, delta);
 
         // AI.
         sys_control_always2d(this, delta);
+        sys_control_particle(this, delta);
 
         // Game logic.
         sys_move2d(this, delta);
