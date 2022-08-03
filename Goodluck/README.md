@@ -1,15 +1,56 @@
 # js13kBreakout with Goodluck
 
-This project is based on [Goodluck](https://gdlck.com), a hackable template for creating small and fast browser games. Goodluck is a bit unusual in that it's not a typical library; you don't import code from it to use in your project. Instead, Goodluck is a repository template — generate a new repository from it, remove the code you don't need, and hack away.
+This project is based on [Goodluck](https://gdlck.com), a hackable template for creating small and fast browser games.
 
 ## Live Demo
 
 * https://breakouts.js13kgames.com/Goodluck/play/
 
+## What is Goodluck?
+
+Goodluck is a template for creating small browser games which fit in a few kilobytes. It's designed for extreme hackability.
+
+### A template
+
+Goodluck is a bit unusual in that it's not a typical library; you don't import code from it to use in your project. Instead, Goodluck is a repository template — generate a new repository from it, remove the code you don't need, and hack away. This comes in handy when optimizing code for size (see below), or when you just need to hardcode something one day before the deadline.
+
+### Entity Component System
+
+Goodluck implements the ECS architecture.
+
+* Game object data is stored in arrays of components, each responsible for a different concern (`LocalTransform2D`, `Render2D`, `Collide2D`, etc.).
+* Entities are indices into these arrays (really, they are just `number`s). They also index a special `Signature` array which for each entity stores the bit mask of components currently enabled for it. The maximum number of components in Goodluck is 32 because JavaScript defines bitwise operations only for 32-bit integers. (Don't worry, that's more than enough for most small games!)
+* Systems are called one by one, and iterate over all entities in the scene and execute logic on the entitie whose signatures match the system's query mask. The game data flows in one direction. It's stored in component arrays and goes through the systems in a deterministic order.
+
+The ECS architecture is all about composition over inheritance.
+Components can be added, removed, and re-added dynamically during the entity's lifetime.
+You can mix and match different behaviors without worrying about pulling in too much logic from a superclass. As the project grows, the behaviors continue to be well isolated from each other. The ease of adding new behaviors to existing entities makes it easy and pleasant to experiment with new gameplay ideas.
+
+### Few abstractions
+
+The key insight of Goodluck is that abstractions, generalizations, and parametrization are responsible for a lot of cruft in the code.
+And so, one of the design principles is to write simple, unsurprising code.
+Systems are just functions with a `for` loop which iterates over all entities in the scene.
+The code is not designed for extension in the future. The goal is to ship a game rather than build a generic engine.
+This "simple" JavaScript has the benefit of usually being very fast in terms of the execution speed, which can make a difference in performance-sensitive apps, like games.
+
+### Why not?
+
+Goodluck and ECS are by no means perfect. It's helpful to understand their limitations and challenges they come with.
+
+#### Why not ECS?
+
+* One of the challenges with ECS is ordering systems correctly. It’s an inherent design problem in ECS and if done wrong, can lead to hard to track bugs.
+* Related to the above, the communication between entities can be hard, confusing, or hard to follow.
+* Coming from the object-oriented paradigm, sometimes it may be mildly annoying that there isn't an `update()` method that can be tweaked. Instead, you may need to write a whole new system (OTOH, they're just for loops, so it's not a lot of work), or try to find another solution, in particular for some one-off logic (like the `dispatch()` function mentioned in Step 2 below).
+
+#### Why not Goodluck?
+
+* Goodluck has seen usage in js13kGames, Gamedev.js, and even Ludum Dare, but it was mostly always the same people: [@michalbe](https://github.com/michalbe) and myself, [@stasm](https://github.com/stasm). There's a chance the barrier to entry for anyone else is high. (I'm trying to tear it down with this document!)
+* Goodluck started out as a solution for building 3D games. In 2022 I began working on a 2D renderer and a collection of 2D systems. I'm sure there are many improvements still waiting to be made!
+* As of August 2022, Goodluck doesn't have any documentation. I've been progressively documenting Goodluck's codebase in hope that I'll be able to build an API reference at one point from it. There are multiple examples in the Goodluck repo, but they don't explain what they do nor how they do it. You're on your own... Good luck, and have fun!
+
 ## The Making Of
-
-I documented the process of creating this project in hope that it will help you learn about Goodluck's workflow.
-
 ### Step 0. Bootstrap a new project
 
 <img src="screenshots/step0.png" align=right width=160>
