@@ -75,6 +75,43 @@ Being granular about these `BallHit...` actions has the added benefit of making 
 
 For a bit of more challenge, I wrap up by increasing the ball's speed. The game's ready to ship!
 
+### Step 4. Optimize!
+
+Optimizing the final build size is one of my favorite parts of every js13kGames edition. For the sake of this write-up's brevity, however, I'll only make one more change to the codebase, and describe a number of ideas for size optimizations that I would typically pursue.
+
+The change that I make is to remove systems which I ended up not using. Rigid body physics, sprite animation, shake, toggle (which turns other compnents on and off on an entity), trigger (which dispatches actions on collisions), and the task system (which schedules callbacks to run in the future). For js13kBreakout, I only remove them from `game.ts` where they're called, leaving all the implementation and component files intact. This way you are free to add them back, dear reader, to tinker with js13kBreakout yourself! Without physics, I can also get away with all of my game logic running inside the framerate-dependent `FrameUpdate()` and not worry about fixed-step updates. The build size goes down from 16,456 bytes to 15,859 bytes. Pretty good!
+
+Now, let's talk about other optimization opportunities.
+
+The first thing that comes to mind is the `logo.png` file. It currently takes half of the ZIP file! In a real js13kGames entry I'd replace it with an SVG file or even HTML with some CSS positioning. The downside of such an approach is that the logo wouldn't look the same for all users and on all platforms, but I'd be willing to trade that for the extra kilobytes. I would also try to inline the logo file instead of putting it into the ZIP as a separate file. There's a small fixed cost for every file added to a ZIP archive and inlining resources is usually a good practice for size-constrained projects.
+
+To guide my further search for optimization, I turn to the output of `esbuild` from the build pipeline. It produces a sorted list of files which contributed the most to the size of the bundle. The values here are helpful but need to be taken with a grain of salt. The sizes reported are for files _after_ tree shaking (good), but before stripping TypeScript typings (bad). They also don't take into account how well a file may compress.
+
+```
+  index.js                                      58.4kb  100.0%
+   ├ ../common/game.ts                           7.5kb   12.8%
+   ├ ../vendor/zzfx.ts                           3.0kb    5.1%
+   ├ ../materials/mat_render2d.ts                2.8kb    4.9%
+   ├ ../src/ui/App.ts                            2.8kb    4.8%
+   ├ ../src/actions.ts                           2.3kb    4.0%
+   ├ ../src/systems/sys_control_bounce.ts        2.3kb    3.9%
+   ├ ../src/systems/sys_transform2d.ts           2.2kb    3.7%
+   ├ ../src/systems/sys_collide2d.ts             1.7kb    2.9%
+   ...                                             ...     ...
+```
+
+Looking at `common/game.ts` I notice that I don't need my `Game` class to inherit from `Game3D`. Instead, I can extend the base `GameImpl` class and just copy a few extra properties from `Game3D`, such as the "scene" canvas with the WebGL2 context, and the "background" canvas with the Context2D API. There's also quite a lot of general input-handling logic in the base `GameImpl` class, as well as some performance measurements, both of which I can remove. For example, I don't actually need to handle the `mousedown` and `mouseup` events because I only ever check for the pointer's position. I also don't need to keep track of the distance the pointer traveled while a given mouse button was pressed (useful for telling apart short clicks from longer dragging gestures). The same goes for touch input. I can also remove the support for the framerate-independed `FixedUpdate()` altogether.
+
+I also realize that ever since I switched to using sprites and `render2d()` instead of green and red rectangles, the only part of the game that still uses `sys_draw2d` (the Context2D drawing API) is the vertical gray rectangle in the background. It sits in the middle of the scene at `[0, 0]`, same as the camera, which means that it's actually rather easy to hardcode `sys_draw2d` to only draw this one particular rectangle every frame.
+
+The rendering system supports multiple cameras, which aren't needed in js13kBreakout. There's also a special mode of resizing the camera's orthographic projection in a way which maintains constant pixel size, which can help pixel art sprites look crisp. I don't need it here either.
+
+A few components store data that I don't need. For instance, the `Lifespan` component can store an optional `Action` which is dispatched when the entity self-destructs. The collision detection system supports bitflag layers which can be used to model advanced rules of interaction between entities. I don't need either of these features in js13kBreakout.
+
+None of the game's objects is defined as a hierarchy of entites (a scene graph). There are no child entities; all entities are top-level. I could remove the `Children` component, which represents the `is-parent-of` relationship. I could also consider removing the `SpatialNode2D` component, which represents the `is-child-of` relationship, as well as stores the world-space transformation matrix. When all entities are guaranteed to be top-level, their local transform _are_ the world transforms. Removing `SpatialNode2D` would open up a few other optimizations in the rendering system.
+
+At this point I also know the final size of the spritesheet so I could hardcode it directly in the shader rather than store it and pass it as a uniform. And last but not least, I should minify the shader. I usually do it manually. If you know a tool that can do it for me, please let me know!
+
 ## Running Locally
 
 To run locally, install the dependencies and start the local dev server:
