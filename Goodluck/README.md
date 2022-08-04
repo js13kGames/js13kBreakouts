@@ -112,6 +112,18 @@ None of the game's objects is defined as a hierarchy of entites (a scene graph).
 
 At this point I also know the final size of the spritesheet so I could hardcode it directly in the shader rather than store it and pass it as a uniform. And last but not least, I should minify the shader. I usually do it manually. If you know a tool that can do it for me, please let me know!
 
+## What's Next?
+
+Checkout the examples and the game showcase at https://gdlck.com, and generate a new project from [piesku/goodluck](https://github.com/piesku/goodluck).
+
+And if you're looking for a challenge, try extending js13kBreakout by:
+
+* Adding camera shake when the ball hits a brick.
+* Making the ball leave a trail of particles in its wake.
+* Flashing the background whem a brick is destroyed.
+* Spawning power-ups from destroyed bricks.
+* [...and many many more!](https://www.youtube.com/watch?v=Fy0aCDmgnxg)
+
 ## Running Locally
 
 To run locally, install the dependencies and start the local dev server:
