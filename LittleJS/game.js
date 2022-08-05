@@ -5,9 +5,9 @@
 'use strict';
 
 // globals
-const maxLives = 3;
 const highScoreKey = 'LittleJS_BreakoutHighScore';
 const logoImage = new Image();
+const maxLives = 3;
 
 // game state
 let ball, paddle, score, lives, bounceCount, isPlaying, worldSize, usingKeyboard;
@@ -19,7 +19,7 @@ const sound_bounce     = new Sound([,,1e3,,.03,.02,1,2,,,940,.03,,,,,.2,.6,,.06]
 const sound_die        = new Sound([1.31,,154,.05,.3,.37,1,.3,-9.9,-6.9,,,.11,,,.2,.02,.42,.16]);
 
 ///////////////////////////////////////////////////////////////////////////////
-function gameInit()
+function gameInit() // called once after LittleJS starts up
 {
     // init fixed size 1080p canvas
     canvasFixedSize = vec2(1080, 1920);
@@ -48,19 +48,19 @@ function startGame()
     paddle = new Paddle(vec2(cameraPos.x, 4));
 
     // spawn blocks
-    let pos = vec2(cameraPos.x - 8, canvasFixedSize.y - 8);
+    let pos = vec2();
     for (pos.x = 1-worldSize.x; pos.x <= worldSize.x; pos.x += 2)
     for (pos.y = 24; pos.y > 16; pos.y -= 1)
     {
-        let color1 = new Color(.44, .06, .09);
-        let color2 = new Color(.64, .15, .19);
-        let colorPercent = percent(pos.y, 24, 16);
+        const color1 = new Color(.44, .06, .09);
+        const color2 = new Color(.64, .15, .19);
+        const colorPercent = percent(pos.y, 24, 16);
         new Block(pos, color1.lerp(color2, colorPercent));
     }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-function gameUpdate()
+function gameUpdate() // called every frame by LittleJS at 60 fps
 {
     // spawn ball
     if (!ball && (mouseWasPressed(0) || gamepadWasPressed(0) || keyWasPressed(13) || keyWasPressed(32)))
@@ -84,20 +84,20 @@ function gameUpdate()
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-function gameUpdatePost()
+function gameUpdatePost() // called after LittleJS objects are updated
 {
-    // unused for this demo, called after objects and physics are updated
+    // unused for this demo
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-function gameRender()
+function gameRender() // called before LittleJS objects are rendered
 {
     // draw the background
     drawRectScreenSpace(canvasFixedSize.scale(.5), canvasFixedSize, new Color(.13, .15, .2));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-function gameRenderPost()
+function gameRenderPost() // called after LittleJS objects are rendered
 {
     if (isPlaying)
     {
@@ -115,11 +115,12 @@ function gameRenderPost()
     else
     {
         // draw logo
-        overlayContext.drawImage(logoImage, overlayCanvas.width/2 - logoImage.width/2, 90);
+        overlayContext.drawImage(logoImage, overlayCanvas.width/2 - logoImage.width/2, 100);
+        drawText('LittleJS Edition', cameraPos.add(vec2(0, 2)), 1);
     }
 
     if (!ball || !isPlaying)
-        drawText(lives || !isPlaying? 'Click to Play' : 'Game Over', cameraPos.add(vec2(0, -1)), 2);
+        drawText(lives || !isPlaying? 'Click to Play' : 'Game Over', cameraPos.add(vec2(0, -2)), 2);
 
     if (!isPlaying)
         drawText('High Score\n' + localStorage[highScoreKey], cameraPos.add(vec2(0, -4)), 1);
@@ -128,6 +129,6 @@ function gameRenderPost()
 ///////////////////////////////////////////////////////////////////////////////
 // Startup LittleJS Engine
 
-// startup when logo is finished
-logoImage.src = 'logo.png';
+// startup when logo is finished loading
 logoImage.onload = ()=> engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, 'tiles.png');
+logoImage.src = 'logo.png';

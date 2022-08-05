@@ -9,6 +9,7 @@ class Paddle extends EngineObject
 {
     constructor(pos)
     {
+        // create engine object
         const size = vec2(3, .7);
         const tileIndex = 1;
         const tileSize = vec2(256, 128);
@@ -21,6 +22,7 @@ class Paddle extends EngineObject
 
     update()
     {
+        // handle user control of paddle
         const moveSpeed = .5;
         if (isUsingGamepad)
         {
@@ -52,6 +54,7 @@ class Block extends EngineObject
 {
     constructor(pos, color)
     {
+        // create engine object
         const size = vec2(2, 1);
         const tileIndex = 1;
         const tileSize = vec2(256, 128);
@@ -70,6 +73,11 @@ class Block extends EngineObject
         // destroy block when hit
         this.destroy();
         sound_breakBlock.play(this.pos);
+        
+        // update score with bonus points for each extra bounce
+        score += ++bounceCount;
+        if (score > localStorage[highScoreKey])
+            localStorage[highScoreKey] = score;
 
         // create particles
         const color1 = this.color;
@@ -83,11 +91,6 @@ class Block extends EngineObject
             .99, .95, .4, PI, .1, // damping, angleDamping, gravityScale, particleCone, fadeRate, 
             1, 0, 1               // randomness, collide, additive, randomColorLinear, renderOrder
         );
-        
-        // update score
-        score += ++bounceCount;
-        if (score > localStorage[highScoreKey])
-            localStorage[highScoreKey] = score;
 
         return 1;
     }
@@ -98,12 +101,13 @@ class Ball extends EngineObject
 {
     constructor(pos)
     {
+        // create engine object
         const size = vec2(.7);
         const tileIndex = 0;
         const tileSize = vec2(128);
         super(pos, size, tileIndex, tileSize);
 
-        // make a bouncy ball
+        // make it bouncy
         this.setCollision(1);
         this.elasticity = 1;
         this.damping = 1;
@@ -147,11 +151,17 @@ class Ball extends EngineObject
             // control direction of ball when it collides with paddle
             const angleScale = .4;
             this.velocity = this.velocity.rotate(angleScale * (this.pos.x - o.pos.x));
+
+            // ensure that ball is moving up
             this.velocity.y = max(abs(this.velocity.y), .2);
 
             // bounce
             this.bounce();
+
+            // reset bounce count when paddle is hit
             bounceCount = 0;
+
+            // prevent default collision
             return 0;
         }
         return 1;
