@@ -1,0 +1,36 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "esbuild (transpile, bundle, serve)",
+            "group": "build",
+            "type": "npm",
+            "script": "start",
+            "isBackground": true,
+        },
+        {
+            "label": "tsc --noEmit (watch for file changes and type-check)",
+            "group": "build",
+            "type": "npm",
+            "script": "ts:watch",
+            "isBackground": true,
+            "problemMatcher": "$tsc-watch",
+        },
+        {
+            "label": "All (default)",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": [
+                "esbuild (transpile, bundle, serve)",
+                "tsc --noEmit (watch for file changes and type-check)",
+            ],
+            "runOptions": {
+                "runOn": "folderOpen"
+            }
+        }
+    ]
+}

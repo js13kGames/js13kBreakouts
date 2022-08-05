@@ -1,0 +1,15 @@
+{
+    "files.exclude": {
+        "{common,core,materials,meshes,[A-Z]*}/*.js": true,
+        "**/*.js.map": true,
+        "package-lock.json": true,
+    },
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": true,
+    },
+    "npm.autoDetect": "off",
+    "typescript.tsc.autoDetect": "off",
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "typescript.preferences.importModuleSpecifierEnding": "js",
+}

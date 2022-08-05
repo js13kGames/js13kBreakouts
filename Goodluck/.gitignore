@@ -1,0 +1,8 @@
+.DS_Store
+.vscode/*.log
+
+node_modules
+*.js
+*.js.map
+play/index.*
+play/logo.*

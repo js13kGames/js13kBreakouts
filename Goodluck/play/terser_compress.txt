@@ -1,0 +1,8 @@
+passes=3
+ecma=9
+drop_console
+pure_getters
+toplevel
+unsafe
+unsafe_math
+hoist_funs
