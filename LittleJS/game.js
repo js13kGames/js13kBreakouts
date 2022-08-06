@@ -62,7 +62,7 @@ function startGame()
 ///////////////////////////////////////////////////////////////////////////////
 function gameUpdate() // called every frame by LittleJS at 60 fps
 {
-    // spawn ball
+    // wait for user input to start
     if (!ball && (mouseWasPressed(0) || gamepadWasPressed(0) || keyWasPressed(13) || keyWasPressed(32)))
     {
         if (!isPlaying)
@@ -119,9 +119,9 @@ function gameRenderPost() // called after LittleJS objects are rendered
         drawText('LittleJS Edition', cameraPos.add(vec2(0, 2)), 1);
     }
 
+    // show hud text
     if (!ball || !isPlaying)
         drawText(lives || !isPlaying? 'Click to Play' : 'Game Over', cameraPos.add(vec2(0, -2)), 2);
-
     if (!isPlaying)
         drawText('High Score\n' + localStorage[highScoreKey], cameraPos.add(vec2(0, -4)), 1);
 }
