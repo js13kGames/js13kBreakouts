@@ -153,6 +153,15 @@ None of the game's objects is defined as a hierarchy of entites (a scene graph).
 
 At this point I also know the final size of the spritesheet so I could hardcode it directly in the shader rather than store it and pass it as a uniform. And last but not least, I should minify the shader. I usually do it manually. If you know a tool that can do it for me, please let me know!
 
+I find that optimizing Goodluck projects for size is relatively easy. Goodluck lends itself well to refactors:
+
+* All the code lives in the project. There are no dependencies.
+* The game data is well-defined in components by means of TypeScript interfaces. Refactors are easy and safe.
+* The game logic is well isolated into systems. For instance, if your game doesn't need physics, remove the physics system.
+
+I also usually avoid golfing my code. Minification and compression are so unpredictable that there really is no telling whether a particular micro-optimization in the source code will have any positive impact on the build size. Additionally, the simpler the code, the more likely it is that it will compress better. For instance, it's often better to repeat some code in a few places than it is to factor it out to its own function. Abstractions increase the entropy of the codebase, while repetition doesn't.
+
+
 ## What's Next?
 
 Checkout the examples and the game showcase at [gdlck.com](https://gdlck.com), and generate a new project from [piesku/goodluck](https://github.com/piesku/goodluck).
