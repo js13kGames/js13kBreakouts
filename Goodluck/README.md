@@ -4,7 +4,7 @@ This project is based on [Goodluck](https://gdlck.com), a hackable template for 
 
 ## Live Demo
 
-* https://breakouts.js13kgames.com/Goodluck/play/
+* [Play Now](https://breakouts.js13kgames.com/Goodluck/play/)
 
 ## What is Goodluck?
 
@@ -155,7 +155,7 @@ At this point I also know the final size of the spritesheet so I could hardcode 
 
 ## What's Next?
 
-Checkout the examples and the game showcase at https://gdlck.com, and generate a new project from [piesku/goodluck](https://github.com/piesku/goodluck).
+Checkout the examples and the game showcase at [gdlck.com](https://gdlck.com), and generate a new project from [piesku/goodluck](https://github.com/piesku/goodluck).
 
 And if you're looking for a challenge, try extending js13kBreakout by:
 
