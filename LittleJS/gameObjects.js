@@ -15,7 +15,7 @@ class Paddle extends EngineObject
         const tileSize = vec2(256, 128);
         super(pos, size, tileIndex, tileSize);
 
-        // set up static collision
+        // set up collision
         this.setCollision(1, 1);
         this.mass = 0;
     }
@@ -45,6 +45,8 @@ class Paddle extends EngineObject
                 usingKeyboard = 0;
             }
         }
+
+        // prevent moving off screen
         this.pos.x = clamp(this.pos.x, this.size.x/2, worldSize.x - this.size.x/2);
     }
 }
@@ -60,12 +62,12 @@ class Block extends EngineObject
         const tileSize = vec2(256, 128);
         super(pos, size, tileIndex, tileSize, 0, color);
 
-        // draw smaller then physical size
-        this.drawSize = vec2(1.7, .7);
-
-        // set up static collision
+        // set up collision
         this.setCollision(1, 1);
         this.mass = 0;
+
+        // draw smaller then physical size
+        this.drawSize = vec2(1.7, .7);
     }
 
     collideWithObject(o)              
@@ -75,7 +77,7 @@ class Block extends EngineObject
         sound_breakBlock.play(this.pos);
         
         // update score with bonus points for each extra bounce
-        score += ++bounceCount;
+        score += ++comboCount;
         if (score > localStorage[highScoreKey])
             localStorage[highScoreKey] = score;
 
@@ -107,8 +109,8 @@ class Ball extends EngineObject
         const tileSize = vec2(128);
         super(pos, size, tileIndex, tileSize);
 
-        // make it bouncy
-        this.setCollision(1);
+        // set up collision
+        this.setCollision(1, 1);
         this.elasticity = 1;
         this.damping = 1;
 
@@ -158,8 +160,8 @@ class Ball extends EngineObject
             // bounce
             this.bounce();
 
-            // reset bounce count when paddle is hit
-            bounceCount = 0;
+            // reset combo when paddle is hit
+            comboCount = 0;
 
             // prevent default collision
             return 0;

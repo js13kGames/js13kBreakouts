@@ -4,12 +4,12 @@
 
 'use strict';
 
-// globals
+// constants
 const highScoreKey = 'LittleJS_BreakoutHighScore';
 const maxLives = 3;
 
-// game state
-let ball, paddle, score, lives, bounceCount, isPlaying, worldSize, usingKeyboard;
+// globals
+let ball, paddle, score, lives, comboCount, isPlaying, worldSize, usingKeyboard;
 
 // sound effects
 const sound_start      = new Sound([,0,500,,.04,.3,1,2,,,570,.02,.02,,,,.04]);
@@ -24,7 +24,7 @@ function startGame()
     engineObjectsDestroy();
     lives = maxLives;
     score = 0;
-    bounceCount = 0;
+    comboCount = 0;
     isPlaying = 1;
 
     // spawn player paddle
