@@ -6,7 +6,6 @@
 
 // globals
 const highScoreKey = 'LittleJS_BreakoutHighScore';
-const logoImage = new Image();
 const maxLives = 3;
 
 // game state
@@ -17,22 +16,6 @@ const sound_start      = new Sound([,0,500,,.04,.3,1,2,,,570,.02,.02,,,,.04]);
 const sound_breakBlock = new Sound([,,90,,.01,.03,4,,,,,,,9,50,.2,,.2,.01], 0);
 const sound_bounce     = new Sound([,,1e3,,.03,.02,1,2,,,940,.03,,,,,.2,.6,,.06], 0);
 const sound_die        = new Sound([1.31,,154,.05,.3,.37,1,.3,-9.9,-6.9,,,.11,,,.2,.02,.42,.16]);
-
-///////////////////////////////////////////////////////////////////////////////
-function gameInit() // called once after LittleJS starts up
-{
-    // init fixed size 1080p canvas
-    canvasFixedSize = vec2(1080, 1920);
-
-    // fit camera to world
-    worldSize = vec2(14, 30);
-    cameraScale = canvasFixedSize.x / worldSize.x;
-    cameraPos = worldSize.scale(.5);
-
-    // init high score
-    if (!localStorage[highScoreKey])
-        localStorage[highScoreKey] = 0;
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 function startGame()
@@ -57,6 +40,22 @@ function startGame()
         const colorPercent = percent(pos.y, 24, 16);
         new Block(pos, color1.lerp(color2, colorPercent));
     }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+function gameInit() // called once after LittleJS starts up
+{
+    // init fixed size 1080p canvas
+    canvasFixedSize = vec2(1080, 1920);
+
+    // fit camera to world
+    worldSize = vec2(14, 30);
+    cameraScale = canvasFixedSize.x / worldSize.x;
+    cameraPos = worldSize.scale(.5);
+
+    // init high score
+    if (!localStorage[highScoreKey])
+        localStorage[highScoreKey] = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -115,20 +114,18 @@ function gameRenderPost() // called after LittleJS objects are rendered
     else
     {
         // draw logo
-        overlayContext.drawImage(logoImage, overlayCanvas.width/2 - logoImage.width/2, 100);
-        drawText('LittleJS Edition', cameraPos.add(vec2(0, 2)), 1);
+        drawTile(cameraPos.add(vec2(0, 6)), vec2(2, 1).scale(8), 1, vec2(1024, 512));
+        drawText('LittleJS Edition', cameraPos.add(vec2(0, 1)), 1);
     }
 
     // show hud text
     if (!ball || !isPlaying)
-        drawText(lives || !isPlaying? 'Click to Play' : 'Game Over', cameraPos.add(vec2(0, -2)), 2);
+        drawText(lives || !isPlaying? 'Click to Play' : 'Game Over', cameraPos.add(vec2(0, -4)), 2);
     if (!isPlaying)
-        drawText('High Score\n' + localStorage[highScoreKey], cameraPos.add(vec2(0, -4)), 1);
+        drawText('High Score\n' + localStorage[highScoreKey], cameraPos.add(vec2(0, -6)), 1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // Startup LittleJS Engine
 
-// startup when logo is finished loading
-logoImage.onload = ()=> engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, 'tiles.png');
-logoImage.src = 'logo.png';
+engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, 'tiles.png');
