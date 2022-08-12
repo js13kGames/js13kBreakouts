@@ -13,7 +13,7 @@ rmdir /s /q %BUILD_FOLDER%
 rem copy engine release build
 mkdir %BUILD_FOLDER%
 cd %BUILD_FOLDER%
-type ..\engine.all.release.js >> %BUILD_FILENAME%
+type ..\engine\engine.all.release.js >> %BUILD_FILENAME%
 echo. >> %BUILD_FILENAME%
 
 rem add your game's files to include here
@@ -57,7 +57,7 @@ type roadroller_%BUILD_FILENAME% >> index.html
 echo ^</script^> >> index.html
 
 rem zip the result, ect is recommended
-call ..\node_modules\ect-bin\vendor\win32\ect.exe -9 -strip -zip ..\%NAME%.zip index.html tiles.png logo.png
+call ..\node_modules\ect-bin\vendor\win32\ect.exe -9 -strip -zip ..\%NAME%.zip index.html tiles.png
 if %ERRORLEVEL% NEQ 0 (
     pause
     exit /b %ERRORLEVEL%

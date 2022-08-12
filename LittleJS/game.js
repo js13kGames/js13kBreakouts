@@ -17,6 +17,9 @@ const sound_breakBlock = new Sound([,,90,,.01,.03,4,,,,,,,9,50,.2,,.2,.01], 0);
 const sound_bounce     = new Sound([,,1e3,,.03,.02,1,2,,,940,.03,,,,,.2,.6,,.06], 0);
 const sound_die        = new Sound([1.31,,154,.05,.3,.37,1,.3,-9.9,-6.9,,,.11,,,.2,.02,.42,.16]);
 
+// hide the LittleJS watermark
+showWatermark = 0;
+
 ///////////////////////////////////////////////////////////////////////////////
 function startGame()
 {

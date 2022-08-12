@@ -125,19 +125,19 @@ class Ball extends EngineObject
         if (nextPos - this.size.x/2 < 0 || nextPos + this.size.x/2 > worldSize.x)
         {
             this.velocity.x *= -1;
-            this.bounce();
+            sound_bounce.play(this.pos);
         }
         if (this.pos.y + this.velocity.y > worldSize.y)
         {
             this.velocity.y *= -1;
-            this.bounce();
+            sound_bounce.play(this.pos);
         }
 
         if (this.pos.y < 0)
         {
             // destroy ball if it goes below the level
-            this.destroy();
             sound_die.play();
+            this.destroy();
             ball = 0;
             lives--;
         }
@@ -154,11 +154,11 @@ class Ball extends EngineObject
             const angleScale = .4;
             this.velocity = this.velocity.rotate(angleScale * (this.pos.x - o.pos.x));
 
-            // ensure that ball is moving up
+            // ensure minimum upwards speed
             this.velocity.y = max(abs(this.velocity.y), .2);
 
             // bounce
-            this.bounce();
+            sound_bounce.play(this.pos);
 
             // reset combo when paddle is hit
             comboCount = 0;
@@ -167,11 +167,5 @@ class Ball extends EngineObject
             return 0;
         }
         return 1;
-    }
-
-    bounce()
-    {
-        // play sound
-        sound_bounce.play(this.pos);
     }
 }
