@@ -1,6 +1,6 @@
 # js13kBreakouts
 
-We implemented th same breakout style game with small libraries/engines/templates for the [js13kGames competition!](https://js13kgames.com)
+We implemented the same breakout style game with small libraries/engines/templates for the [js13kGames competition!](https://js13kgames.com)
 
 ![js13k Breakouts Logo](logo.png)
 
