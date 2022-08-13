@@ -23,7 +23,6 @@ echo. >> %BUILD_FILENAME%
 
 rem copy images to build folder
 copy ..\tiles.png tiles.png
-copy ..\logo.png logo.png
 
 rem minify code with closure
 move %BUILD_FILENAME% %BUILD_FILENAME%.temp
