@@ -16,7 +16,7 @@ class Paddle extends EngineObject
         super(pos, size, tileIndex, tileSize);
 
         // set up collision
-        this.setCollision(1, 1);
+        this.setCollision();
         this.mass = 0;
     }
 
@@ -63,7 +63,7 @@ class Block extends EngineObject
         super(pos, size, tileIndex, tileSize, 0, color);
 
         // set up collision
-        this.setCollision(1, 1);
+        this.setCollision();
         this.mass = 0;
 
         // draw smaller then physical size
@@ -110,9 +110,8 @@ class Ball extends EngineObject
         super(pos, size, tileIndex, tileSize);
 
         // set up collision
-        this.setCollision(1, 1);
+        this.setCollision();
         this.elasticity = 1;
-        this.damping = 1;
 
         // set start speed
         this.velocity = vec2(0, -.2);

@@ -12,8 +12,8 @@ rmdir /s /q %BUILD_FOLDER%
 
 rem copy engine release build
 mkdir %BUILD_FOLDER%
-cd %BUILD_FOLDER%
-type ..\engine\engine.all.release.js >> %BUILD_FILENAME%
+pushd %BUILD_FOLDER%
+type ..\littlejs.release.js >> %BUILD_FILENAME%
 echo. >> %BUILD_FILENAME%
 
 rem add your game's files to include here
@@ -33,9 +33,8 @@ if %ERRORLEVEL% NEQ 0 (
 )
 del %BUILD_FILENAME%.temp
 
-rem more minification with uglify or terser (they both do about the same)
+rem more minification with uglify
 call npx uglifyjs -o %BUILD_FILENAME% --compress --mangle -- %BUILD_FILENAME%
-rem call terser -o %BUILD_FILENAME% --compress --mangle -- %BUILD_FILENAME%
 if %ERRORLEVEL% NEQ 0 (
     pause
     exit /b %ERRORLEVEL%
@@ -51,7 +50,7 @@ if %ERRORLEVEL% NEQ 0 (
 
 rem build the html, you can add html header and footers here
 rem type ..\header.html >> index.html
-echo ^<body^>^<meta charset=utf-8^>^<script^> >> index.html
+echo ^<body^>^<script^> >> index.html
 type roadroller_%BUILD_FILENAME% >> index.html
 echo ^</script^> >> index.html
 
@@ -62,6 +61,4 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b %ERRORLEVEL%
 )
 
-cd ..
-
-rem pause to see result
+popd rem BUILD_FOLDER

@@ -94,8 +94,8 @@ function gameUpdatePost() // called after LittleJS objects are updated
 ///////////////////////////////////////////////////////////////////////////////
 function gameRender() // called before LittleJS objects are rendered
 {
-    // draw the background
-    drawRectScreenSpace(canvasFixedSize.scale(.5), canvasFixedSize, new Color(.13, .15, .2));
+    // draw the background without using webgl
+    drawRectScreenSpace(canvasFixedSize.scale(.5), canvasFixedSize, new Color(.13, .15, .2), 0, 0);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
