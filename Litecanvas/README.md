@@ -4,4 +4,4 @@ Breakout game using [Litecanvas](https://github.com/litecanvas/game-engine) for 
 
 ## Live Demo
 
-- [Play Now](https://breakouts.js13kgames.com/Litecanvas/build/)
+- [Play Now](https://breakouts.js13kgames.com/Litecanvas)
