@@ -1,0 +1,21 @@
+{
+  "name": "litecanvas-breakout-js13k",
+  "version": "1.0.0",
+  "description": "Litecanvas Breakout Example",
+  "type": "module",
+  "scripts": {
+    "dev": "esbuild src/index.js --bundle --minify --watch --outfile=game.min.js --servedir=.",
+    "build": "esbuild src/index.js --bundle --minify --outfile=game.min.js",
+    "prepare": "npm run build",
+    "format": "npx prettier -w ."
+  },
+  "author": "Luiz Bills <luizbills@pm.me>",
+  "license": "MIT",
+  "devDependencies": {
+    "esbuild": "^0.20.1"
+  },
+  "dependencies": {
+    "@litecanvas/utils": "^0.*",
+    "litecanvas": "^0.*"
+  }
+}
