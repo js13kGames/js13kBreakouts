@@ -4,8 +4,7 @@ import { customColors, imageLoader } from "./extensions";
 import { SPAWN } from "./sounds";
 
 const localStorageKey = "js13breakouts_litecanvas_highscore",
-  images = {},
-  events = {};
+  images = {};
 
 let /** @type {Ball} */
   ball,
@@ -29,6 +28,7 @@ let /** @type {Ball} */
 litecanvas({
   width: 1080,
   height: 1920,
+  antialias: true,
   loop: {
     init,
     update,
@@ -182,9 +182,9 @@ function _renderMenu() {
 
 function _updateLevel(dt) {
   // maybe update paddle position based on mouse
-  const [x] = mousepos();
-  if (x >= 0) {
-    paddle.moveTo(x);
+  const mouseX = MOUSEX;
+  if (mouseX >= 0) {
+    paddle.moveTo(mouseX);
   }
 
   paddle.update();
@@ -292,12 +292,13 @@ function _renderLifes() {
   push();
   const size = 50;
   const spacing = 15;
+  const borderRadius = [5];
 
-  translate(CENTERX - size - spacing, 50);
+  translate(CENTERX - size * 1.5 - spacing, 50);
 
   for (let i = 0; i < 3; i++) {
     const color = i < lifes ? 2 : 1;
-    rectfill(i * size + i * spacing, 0, size, size, color, [5]);
+    rectfill(i * size + i * spacing, 0, size, size, color, borderRadius);
   }
   pop();
 }
