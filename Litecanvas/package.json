@@ -4,18 +4,19 @@
   "description": "Litecanvas Breakout Example",
   "type": "module",
   "scripts": {
-    "dev": "esbuild src/index.js --bundle --minify --watch --outfile=game.min.js --servedir=.",
+    "dev": "esbuild src/index.js --bundle --watch --outfile=game.min.js --servedir=.",
     "build": "esbuild src/index.js --bundle --minify --outfile=game.min.js",
     "prepare": "npm run build",
-    "format": "npx prettier -w ."
+    "format": "prettier -w ."
   },
   "author": "Luiz Bills <luizbills@pm.me>",
   "license": "MIT",
   "devDependencies": {
-    "esbuild": "^0.20.1"
+    "esbuild": "^0.20.1",
+    "prettier": "^3.4.2"
   },
   "dependencies": {
-    "@litecanvas/utils": "0.3.2",
-    "litecanvas": "0.49.0"
+    "@litecanvas/utils": "0.24",
+    "litecanvas": "0.67"
   }
 }

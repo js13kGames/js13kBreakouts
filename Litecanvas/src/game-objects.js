@@ -1,5 +1,5 @@
 // import vector and collision utils https://github.com/litecanvas/utils
-import { vec, vecmag, vecrot, resolve } from "@litecanvas/utils";
+import { vec, vecMag, vecRotate, resolve } from "@litecanvas/utils";
 import { BOUNCE, OFFSCREEN } from "./sounds";
 
 export class Paddle {
@@ -131,8 +131,8 @@ export class Ball {
               deg2rad(-45),
             );
 
-            const magnitude = vecmag(this.velocity);
-            vecrot(this.velocity, radians);
+            const magnitude = vecMag(this.velocity);
+            vecRotate(this.velocity, radians);
 
             this.velocity.x = magnitude * cos(radians);
             this.velocity.y = -clamp(abs(this.velocity.y), 900, 1200);
