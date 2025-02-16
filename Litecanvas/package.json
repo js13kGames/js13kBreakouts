@@ -4,8 +4,8 @@
   "description": "Litecanvas Breakout Example",
   "type": "module",
   "scripts": {
-    "dev": "esbuild src/index.js --bundle --watch --outfile=game.min.js --servedir=.",
-    "build": "esbuild src/index.js --bundle --minify --outfile=game.min.js",
+    "dev": "esbuild src/index.js --bundle --watch --define:DEV_BUILD=true --outfile=game.min.js --servedir=.",
+    "build": "esbuild src/index.js --bundle --minify --define:DEV_BUILD=false --outfile=game.min.js",
     "prepare": "npm run build",
     "format": "prettier -w ."
   },
@@ -16,7 +16,7 @@
     "prettier": "^3.4.2"
   },
   "dependencies": {
-    "@litecanvas/utils": "0.24",
-    "litecanvas": "0.67"
+    "@litecanvas/utils": "^0.26.0",
+    "litecanvas": "^0.73.4"
   }
 }
