@@ -2,21 +2,24 @@
   "name": "litecanvas-breakout-js13k",
   "version": "1.0.0",
   "description": "Litecanvas Breakout Example",
+  "author": "Luiz Bills <luizbills@pm.me>",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "esbuild src/index.js --bundle --watch --define:DEV_BUILD=true --outfile=game.min.js --servedir=.",
     "build": "esbuild src/index.js --bundle --minify --define:DEV_BUILD=false --outfile=game.min.js",
     "prepare": "npm run build",
-    "format": "prettier -w ."
+    "format": "prettier -w .",
+    "zip": "zip -9 js13kBreakouts.zip game.min.js logo.png index.html",
+    "pack": "npm run build && roadroller game.min.js -o game.min.js -Zab26 -Zdy0 -Zlr1113 -Zmd27 -Zpr14 -S0,1,2,3,7,13,25,35,42,161,209,338 && npm run zip"
   },
-  "author": "Luiz Bills <luizbills@pm.me>",
-  "license": "MIT",
   "devDependencies": {
-    "esbuild": "^0.20.1",
-    "prettier": "^3.4.2"
+    "esbuild": "^0.28.1",
+    "prettier": "^3.8.4",
+    "roadroller": "^2.1.0"
   },
   "dependencies": {
-    "@litecanvas/utils": "^0.26.0",
-    "litecanvas": "^0.73.4"
+    "@litecanvas/utils": "^0.52.1",
+    "litecanvas": "^0.301.1"
   }
 }

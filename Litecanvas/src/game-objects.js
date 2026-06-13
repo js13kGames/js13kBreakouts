@@ -1,5 +1,11 @@
 // import vector and collision utils https://github.com/litecanvas/utils
-import { vec, vecMag, vecRotate, resolve } from "@litecanvas/utils";
+import {
+  vec,
+  vecMag,
+  vecRotate,
+  resolverect,
+  colrect,
+} from "@litecanvas/utils";
 import { BOUNCE, OFFSCREEN } from "./sounds";
 
 export class Paddle {
@@ -29,7 +35,7 @@ export class Paddle {
   update(dt) {
     if (this.dx != null) {
       // smooth movement using `lerp()`
-      this.pos.x = clamp(lerp(this.pos.x, this.dx, 0.1), 0, WIDTH - this.width);
+      this.pos.x = clamp(lerp(this.pos.x, this.dx, 0.1), 0, W - this.width);
     }
   }
 
@@ -68,8 +74,8 @@ export class Ball {
   reset() {
     this.velocity.x = 0;
     this.velocity.y = 900;
-    this.pos.x = CENTERX;
-    this.pos.y = CENTERY;
+    this.pos.x = W / 2;
+    this.pos.y = H / 2;
     this.offscreen = false;
   }
 
@@ -87,11 +93,11 @@ export class Ball {
       this.pos.x = this.radius;
       this.velocity.x *= -1;
       sfx(BOUNCE);
-    } else if (this.pos.x + this.radius > WIDTH) {
-      this.pos.x = WIDTH - this.radius;
+    } else if (this.pos.x + this.radius > W) {
+      this.pos.x = W - this.radius;
       this.velocity.x *= -1;
       sfx(BOUNCE);
-    } else if (this.pos.y - this.radius > HEIGHT) {
+    } else if (this.pos.y - this.radius > H) {
       this.offscreen = true;
       sfx(OFFSCREEN);
     }
@@ -106,22 +112,18 @@ export class Ball {
     const ballAABB = this.aabb();
     const objectAABB = object.aabb();
     if (colrect(...ballAABB, ...objectAABB)) {
-      sfx(BOUNCE);
+      const { dir, x: newx, y: newy } = resolverect(...ballAABB, ...objectAABB);
 
-      const {
-        direction,
-        x: newx,
-        y: newy,
-      } = resolve(...ballAABB, ...objectAABB);
-
-      if (direction) {
+      if (dir) {
         this.pos.x = newx + this.radius;
         this.pos.y = newy + this.radius;
       }
 
       // is colliding with paddle?
       if (object instanceof Paddle) {
-        switch (direction) {
+        sfx(BOUNCE);
+
+        switch (dir) {
           case "bottom":
             const paddleX = object.pos.x + object.width / 2;
             const paddleY = object.pos.y + object.height / 2;
@@ -143,7 +145,7 @@ export class Ball {
             this.velocity.y = abs(this.velocity.y) > 0 ? this.velocity.y : 900;
         }
       } else if (object instanceof Brick) {
-        switch (direction) {
+        switch (dir) {
           case "top":
           case "bottom":
             this.velocity.y *= -1;
