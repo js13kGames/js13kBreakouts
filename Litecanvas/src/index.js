@@ -1,7 +1,7 @@
 import litecanvas from "litecanvas";
 import { Paddle, Ball, Brick, Particle } from "./game-objects";
 import { customColors, imageLoader } from "./extensions";
-import { SPAWN } from "./sounds";
+import { BREAK, SPAWN } from "./sounds";
 
 const localStorageKey = "js13breakouts_litecanvas_highscore",
   images = {};
@@ -113,7 +113,7 @@ function draw() {
   pop();
 
   // textalign("start", "bottom");
-  // text(10, HEIGHT - 10, FPS, 2);
+  // text(10, H - 10, FPS, 2);
 }
 
 /**
@@ -123,7 +123,7 @@ function _startGame() {
   if (isPlaying) return;
 
   // maybe create a paddle
-  paddle = paddle ? paddle : new Paddle(CENTERX, HEIGHT - 100);
+  paddle = paddle ? paddle : new Paddle(W / 2, H - 100);
 
   // maybe create a ball
   ball = ball ? ball : new Ball();
@@ -139,7 +139,7 @@ function _startGame() {
   const padding = 16;
   const rows = 8;
   const cols = 7;
-  const brickWidth = (WIDTH - (cols - 1) * padding - margin * 2) / 7;
+  const brickWidth = (W - (cols - 1) * padding - margin * 2) / 7;
   const brickHeight = 48;
   const startY = 200;
   const startX = margin;
@@ -173,16 +173,16 @@ function _renderMenu() {
 
   textsize(150);
   textalign("center", "middle");
-  text(CENTERX, CENTERY + 200, "Tap to Play", 2);
+  text(W / 2, H / 2 + 200, "Tap to Play", 2);
 
   textsize(90);
-  text(CENTERX, CENTERY + 400, "High Score", 2);
-  text(CENTERX, CENTERY + 520, bestScore, 2);
+  text(W / 2, H / 2 + 400, "High Score", 2);
+  text(W / 2, H / 2 + 520, bestScore, 2);
 }
 
 function _updateLevel(dt) {
   // maybe update paddle position based on mouse
-  const mouseX = MOUSEX;
+  const mouseX = MX;
   if (mouseX >= 0) {
     paddle.moveTo(mouseX);
   }
@@ -230,6 +230,8 @@ function _updateLevel(dt) {
         collided = ball.checkCollision(brick);
 
         if (collided) {
+          sfx(BREAK);
+
           // Destroys a brick if it collides with the ball
           bricks.splice(i, 1);
 
@@ -284,7 +286,7 @@ function _renderLevel() {
     textalign("center", "middle");
 
     const message = lifes > 0 ? "Tap to Play" : "Game Over!";
-    text(CENTERX, CENTERY + 200, message, 2);
+    text(W / 2, H / 2 + 200, message, 2);
   }
 }
 
@@ -294,7 +296,7 @@ function _renderLifes() {
   const spacing = 15;
   const borderRadius = [5];
 
-  translate(CENTERX - size * 1.5 - spacing, 50);
+  translate(W / 2 - size * 1.5 - spacing, 50);
 
   for (let i = 0; i < 3; i++) {
     const color = i < lifes ? 2 : 1;

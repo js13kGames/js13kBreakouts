@@ -30,11 +30,7 @@ export function customColors(engine, { colors }) {
     "#9c232d",
   ];
 
-  // overrides the litecanvas default colors
-  colors.length = customPalette.length;
-  for (const [index, color] of customPalette.entries()) {
-    colors[index] = color;
-  }
+  engine.pal(customPalette);
 }
 
 /**
@@ -45,17 +41,17 @@ export function customColors(engine, { colors }) {
  * @param {LitecanvasInstance} engine
  */
 export function imageLoader(engine) {
-  engine.setvar("LOADING", 0);
+  engine.def("LOADING", 0);
 
   const loadImage = async (src, callback) => {
     const image = new Image();
 
     image.crossOrigin = "anonymous";
-    engine.setvar("LOADING", engine.LOADING + 1);
+    engine.def("LOADING", engine.LOADING + 1);
 
     image.onload = () => {
       callback(image);
-      engine.setvar("LOADING", engine.LOADING - 1);
+      engine.def("LOADING", engine.LOADING - 1);
     };
 
     image.src = src;
